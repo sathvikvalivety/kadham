@@ -16,7 +16,7 @@ function LoginPage({ onLogin }) {
       const res = await api.post("/auth/login", { email, password });
       onLogin(res.data.token);
       navigate("/");
-    } catch (err) {
+    } catch (_err) {
       setError("Login failed");
     }
   };
@@ -54,7 +54,10 @@ function LoginPage({ onLogin }) {
         </button>
       </form>
       <p className="text-xs text-gray-600 mt-3">
-        New to Kadham? <Link to="/register" className="text-primary">Register</Link>
+        New to Kadham?{" "}
+        <Link to="/register" className="text-primary">
+          Register
+        </Link>
       </p>
     </div>
   );

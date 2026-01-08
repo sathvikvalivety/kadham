@@ -1,6 +1,5 @@
 import { BrowserProvider, Contract } from "ethers";
 
-const REWARD_MANAGER_ADDRESS = import.meta.env.VITE_REWARD_MANAGER_ADDRESS || "";
 const GBC_TOKEN_ADDRESS = import.meta.env.VITE_GBC_TOKEN_ADDRESS || "";
 
 const erc20Abi = [

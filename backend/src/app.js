@@ -19,7 +19,12 @@ const { authenticateJWT } = require("./middleware/auth");
 const app = express();
 
 app.use(helmet());
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.NODE_ENV === "production" ? process.env.FRONTEND_URL : "*",
+    credentials: true
+  })
+);
 app.use(express.json());
 app.use(morgan("dev"));
 
@@ -43,7 +48,7 @@ app.use("/api/rewards", authenticateJWT, rewardRoutes);
 app.use("/api/ai", authenticateJWT, aiRoutes);
 app.use("/api/transactions", authenticateJWT, transactionRoutes);
 
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
   console.error(err);
   res.status(err.status || 500).json({ message: err.message || "Internal server error" });
 });

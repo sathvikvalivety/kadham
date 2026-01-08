@@ -5,7 +5,13 @@ async function createWasteDeposit({ userId, binId, description }) {
     "INSERT INTO waste_deposits (user_id, bin_id, description, status) VALUES (?, ?, ?, ?)",
     [userId, binId, description || "", "PENDING_VERIFICATION"]
   );
-  return { id: result.insertId, user_id: userId, bin_id: binId, description, status: "PENDING_VERIFICATION" };
+  return {
+    id: result.insertId,
+    user_id: userId,
+    bin_id: binId,
+    description,
+    status: "PENDING_VERIFICATION"
+  };
 }
 
 async function updateWasteDepositVerification({ id, status, materialType, weightKg, ecoScore }) {

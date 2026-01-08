@@ -38,10 +38,7 @@ function Navbar({ isAuthenticated, onLogout }) {
           )}
           <WalletConnect />
           {isAuthenticated ? (
-            <button
-              onClick={handleLogoutClick}
-              className="text-sm text-red-600 hover:text-red-700"
-            >
+            <button onClick={handleLogoutClick} className="text-sm text-red-600 hover:text-red-700">
               Logout
             </button>
           ) : (

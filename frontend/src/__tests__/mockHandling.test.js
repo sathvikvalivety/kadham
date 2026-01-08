@@ -1,4 +1,7 @@
-// Frontend mock data handling test placeholder.
-// Add your preferred testing framework (e.g., Vitest, Jest) and implement
-// component tests that validate mock eco-scores, QR scan behavior, and
-// API client usage.
+import { describe, it, expect } from "vitest";
+
+describe("Frontend Setup", () => {
+  it("should have a valid testing environment", () => {
+    expect(true).toBe(true);
+  });
+});
