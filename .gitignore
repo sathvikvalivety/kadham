@@ -1,0 +1,94 @@
+# =====================
+# Dependencies
+# =====================
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# =====================
+# Environment variables (CRITICAL)
+# =====================
+.env
+.env.*
+*.env
+
+# =====================
+# Build outputs
+# =====================
+dist/
+build/
+out/
+.next/
+*.log
+
+# =====================
+# Logs
+# =====================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# =====================
+# Testing
+# =====================
+coverage/
+*.lcov
+.nyc_output/
+
+# =====================
+# IDE / Editors
+# =====================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# =====================
+# Hardhat / Blockchain
+# =====================
+blockchain/cache/
+blockchain/artifacts/
+blockchain/node_modules/
+typechain/
+typechain-types/
+
+# =====================
+# Frontend
+# =====================
+frontend/dist/
+frontend/build/
+
+# =====================
+# Backend
+# =====================
+backend/node_modules/
+
+# =====================
+# Temporary / Cache
+# =====================
+*.tmp
+*.temp
+.cache/
+
+# =====================
+# Database
+# =====================
+*.db
+*.sqlite
+*.sqlite3
+
+# =====================
+# Secrets & Keys (EXTRA SAFETY)
+# =====================
+*.pem
+*.key
+secrets/
+wallets/
+private/
