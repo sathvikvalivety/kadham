@@ -61,3 +61,8 @@ CREATE TABLE eco_products (
   sku VARCHAR(100) NOT NULL UNIQUE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Seed Data: Initial Smart Bins
+INSERT IGNORE INTO smart_bins (location, qr_code) VALUES ('Main St', 'BIN-001');
+INSERT IGNORE INTO smart_bins (location, qr_code) VALUES ('Park Ave', 'BIN-002');
+

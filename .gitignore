@@ -2,9 +2,9 @@
 # Dependencies
 # =====================
 node_modules/
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
 
 # =====================
 # Environment variables (CRITICAL)
@@ -12,6 +12,7 @@ pnpm-lock.yaml
 .env
 .env.*
 *.env
+!*.env.example
 
 # =====================
 # Build outputs
@@ -92,3 +93,5 @@ backend/node_modules/
 secrets/
 wallets/
 private/
+venv/
+
