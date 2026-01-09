@@ -14,6 +14,7 @@ contract RewardManager is AccessControl {
     bytes32 public constant ORACLE_ROLE = keccak256("ORACLE_ROLE");
 
     IGBC public immutable gbc;
+    mapping(bytes32 => bool) public processedDeposits;
 
     /// @notice Emitted when a reward is issued for a deposit.
     /// @param user The address of the rewarded user.
@@ -36,6 +37,9 @@ contract RewardManager is AccessControl {
     function rewardDeposit(address user, uint256 amount, bytes32 offchainDepositId) external onlyRole(ORACLE_ROLE) {
         require(user != address(0), "User required");
         require(amount > 0, "Amount must be > 0");
+        require(!processedDeposits[offchainDepositId], "Deposit already rewarded");
+        
+        processedDeposits[offchainDepositId] = true;
         gbc.mint(user, amount);
         emit RewardIssued(user, amount, offchainDepositId);
     }

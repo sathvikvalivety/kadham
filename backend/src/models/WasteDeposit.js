@@ -23,7 +23,7 @@ async function updateWasteDepositVerification({ id, status, materialType, weight
 }
 
 async function attachTxHash(id, txHash) {
-  await db.execute("UPDATE waste_deposits SET tx_hash = ? WHERE id = ?", [txHash, id]);
+  await db.execute("UPDATE waste_deposits SET tx_hash = ? WHERE id = ?", [txHash || null, id]);
 }
 
 async function findWasteDepositById(id) {

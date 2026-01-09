@@ -16,6 +16,10 @@ async function rewardDeposit(req, res) {
     return res.status(400).json({ message: "Deposit is not approved for rewards" });
   }
 
+  if (deposit.tx_hash) {
+    return res.status(400).json({ message: "Deposit has already been rewarded" });
+  }
+
   const wallets = await Wallet.listWalletsForUser(userId);
   const primaryWallet = wallets.find((w) => w.verified);
 
@@ -34,17 +38,20 @@ async function rewardDeposit(req, res) {
     await Transaction.recordTransaction({
       userId,
       type: "REWARD",
-      amount: amountGbc,
+      amount: amountGbc || 0,
       tokenSymbol: "GBC",
       direction: "CREDIT",
-      txHash,
+      txHash: txHash || null,
       metadata: { depositId: deposit.id }
     });
 
     return res.json({ txHash });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Blockchain reward failed" });
+    console.error("[REWARD_CLAIM_FAILED]", err);
+    return res.status(500).json({
+      message: "Blockchain reward failed",
+      error: err.reason || err.message || "Unknown error"
+    });
   }
 }
 

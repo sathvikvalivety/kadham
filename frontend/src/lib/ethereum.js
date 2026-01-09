@@ -33,3 +33,11 @@ export async function getGbcBalance(address) {
   const fractionalPart = rawBalance % divisor;
   return `${integerPart}.${fractionalPart.toString().padStart(decimals, "0").slice(0, 4)}`;
 }
+export async function signMessage(message) {
+  if (!window.ethereum) {
+    throw new Error("MetaMask is required");
+  }
+  const provider = new BrowserProvider(window.ethereum);
+  const signer = await provider.getSigner();
+  return await signer.signMessage(message);
+}

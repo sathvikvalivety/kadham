@@ -40,7 +40,7 @@ async function issueRewardForDeposit({ userAddress, amountGbc, offchainDepositId
   const tx = await rewardManagerContract.rewardDeposit(userAddress, amountWei, idBytes);
   const receipt = await tx.wait();
 
-  return { txHash: receipt.transactionHash };
+  return { txHash: receipt.hash };
 }
 
 initOracle();
