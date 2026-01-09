@@ -22,10 +22,7 @@ function QRScanMock({ label, onScan }) {
           onChange={(e) => setValue(e.target.value)}
           placeholder="e.g. BIN-001 or SKU-123"
         />
-        <button
-          onClick={handleUseMock}
-          className="px-3 py-1 bg-primary text-white text-sm rounded"
-        >
+        <button onClick={handleUseMock} className="px-3 py-1 bg-primary text-white text-sm rounded">
           Use Code
         </button>
       </div>

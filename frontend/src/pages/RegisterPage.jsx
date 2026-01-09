@@ -18,7 +18,7 @@ function RegisterPage() {
       await api.post("/auth/register", { email, password });
       setSuccess(true);
       setTimeout(() => navigate("/login"), 1000);
-    } catch (err) {
+    } catch (_err) {
       setError("Registration failed");
     }
   };
@@ -48,7 +48,9 @@ function RegisterPage() {
           />
         </div>
         {error && <p className="text-sm text-red-600">{error}</p>}
-        {success && <p className="text-sm text-green-600">Registration successful. Redirecting...</p>}
+        {success && (
+          <p className="text-sm text-green-600">Registration successful. Redirecting...</p>
+        )}
         <button
           type="submit"
           className="w-full bg-primary text-white py-2 rounded text-sm font-medium"
@@ -57,7 +59,10 @@ function RegisterPage() {
         </button>
       </form>
       <p className="text-xs text-gray-600 mt-3">
-        Already registered? <Link to="/login" className="text-primary">Login</Link>
+        Already registered?{" "}
+        <Link to="/login" className="text-primary">
+          Login
+        </Link>
       </p>
     </div>
   );

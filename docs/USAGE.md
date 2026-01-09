@@ -57,6 +57,33 @@ This binds the Ethereum address to your Kadham user profile.
   - Managing the product catalog via CRUD endpoints (extendable from the current read-only setup).
   - Monitoring deposits, approvals, and rewards using database queries and logs.
 
+## Admin Capabilities
+
+There is currently no dedicated UI for admins. Admin actions must be performed via API client (like Postman or curl) or direct database access.
+
+### 1. Becoming an Admin
+
+By default, all registered users have the role `user`. To make a user an admin:
+
+```sql
+UPDATE users SET role = 'admin' WHERE email = 'your-email@example.com';
+```
+
+### 2. Available Admin Actions
+
+**Create Smart Bin**
+- **Endpoint**: `POST /api/bins`
+- **Headers**:
+  - `Authorization`: `Bearer <your-jwt-token>`
+  - `Content-Type`: `application/json`
+- **Body**:
+  ```json
+  {
+    "location": "Central Station",
+    "qrCode": "BIN-003"
+  }
+  ```
+
 ## Waste → GBC → Purchase Loop (End-to-End)
 
 1. **Deposit**: User drops waste into a smart bin and submits a deposit via the app.

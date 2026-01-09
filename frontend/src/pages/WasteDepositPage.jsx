@@ -24,7 +24,7 @@ function WasteDepositPage() {
         description
       });
       setResult(depositRes.data);
-    } catch (err) {
+    } catch (_err) {
       setError("Failed to submit deposit");
     }
   };

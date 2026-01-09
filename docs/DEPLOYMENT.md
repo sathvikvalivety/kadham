@@ -23,6 +23,8 @@ This document describes how to run Kadham locally and how to deploy the blockcha
    mysql -u <user> -p kadham < backend/db/schema.sql
    ```
 
+   *Note: The schema includes initial seed data for smart bins (BIN-001, BIN-002) to verify deposits immediately.*
+
 ## 2. Blockchain Deployment
 
 1. Navigate to the blockchain project:

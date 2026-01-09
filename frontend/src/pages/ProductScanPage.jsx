@@ -16,7 +16,7 @@ function ProductScanPage() {
       const res = await api.get(`/products`);
       const found = res.data.find((p) => p.sku === sku) || res.data[0] || null;
       setProduct(found);
-    } catch (err) {
+    } catch (_err) {
       setError("Failed to load product info");
     }
   };
@@ -38,7 +38,8 @@ function ProductScanPage() {
       )}
       {!product && !error && (
         <p className="text-xs text-gray-600">
-          Scan a product to see its eco-score. Scores are stored in the Kadham backend, not calculated on this client.
+          Scan a product to see its eco-score. Scores are stored in the Kadham backend, not
+          calculated on this client.
         </p>
       )}
     </div>

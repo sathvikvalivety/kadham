@@ -1,6 +1,14 @@
 const db = require("../db");
 
-async function recordTransaction({ userId, type, amount, tokenSymbol, direction, txHash, metadata }) {
+async function recordTransaction({
+  userId,
+  type,
+  amount,
+  tokenSymbol,
+  direction,
+  txHash,
+  metadata
+}) {
   const [result] = await db.execute(
     "INSERT INTO transactions (user_id, type, amount, token_symbol, direction, tx_hash, metadata) VALUES (?, ?, ?, ?, ?, ?, ?)",
     [userId, type, amount, tokenSymbol, direction, txHash, JSON.stringify(metadata || {})]

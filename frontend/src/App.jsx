@@ -29,10 +29,7 @@ function App() {
       <Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} />
       <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-6">
         <Routes>
-          <Route
-            path="/login"
-            element={<LoginPage onLogin={handleLogin} />}
-          />
+          <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route
             path="/"

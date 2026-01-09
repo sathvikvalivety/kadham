@@ -6,11 +6,6 @@ const validate = require("../middleware/validate");
 
 const router = express.Router();
 
-router.post(
-  "/verify",
-  [body("depositId").isInt()],
-  validate,
-  verifyDeposit
-);
+router.post("/verify", [body("depositId").isInt()], validate, verifyDeposit);
 
 module.exports = router;

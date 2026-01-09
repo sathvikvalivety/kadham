@@ -11,7 +11,11 @@ const rewardManagerAbi = [
 ];
 
 function initOracle() {
-  if (!config.blockchain.rpcUrl || !config.blockchain.rewardManagerAddress || !config.blockchain.oraclePrivateKey) {
+  if (
+    !config.blockchain.rpcUrl ||
+    !config.blockchain.rewardManagerAddress ||
+    !config.blockchain.oraclePrivateKey
+  ) {
     console.warn("Oracle not fully configured. Blockchain operations will be disabled.");
     return;
   }
