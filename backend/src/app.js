@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
-const rateLimit = require("express-rate-limit");
+// const rateLimit = require("express-rate-limit");
 
 const config = require("./config");
 const authRoutes = require("./routes/auth");
@@ -25,15 +25,20 @@ app.use(
     credentials: true
   })
 );
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(morgan("dev"));
 
+/*
 const limiter = rateLimit({
   windowMs: config.security.rateLimitWindowMs,
   max: config.security.rateLimitMaxRequests
 });
 
-app.use(limiter);
+if (process.env.NODE_ENV === "production") {
+  app.use(limiter);
+}
+*/
 
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
@@ -45,7 +50,7 @@ app.use("/api/bins", authenticateJWT, binRoutes);
 app.use("/api/deposits", authenticateJWT, depositRoutes);
 app.use("/api/products", authenticateJWT, productRoutes);
 app.use("/api/rewards", authenticateJWT, rewardRoutes);
-app.use("/api/ai", authenticateJWT, aiRoutes);
+app.use("/api/ai", aiRoutes);
 app.use("/api/transactions", authenticateJWT, transactionRoutes);
 
 app.use((err, req, res, _next) => {

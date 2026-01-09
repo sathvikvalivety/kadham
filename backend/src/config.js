@@ -20,7 +20,7 @@ const config = {
   },
   security: {
     rateLimitWindowMs: 15 * 60 * 1000,
-    rateLimitMaxRequests: 100
+    rateLimitMaxRequests: 1000
   }
 };
 

@@ -1,15 +1,16 @@
 const db = require("../db");
 
-async function createWasteDeposit({ userId, binId, description }) {
+async function createWasteDeposit({ userId, binId, description, image }) {
   const [result] = await db.execute(
-    "INSERT INTO waste_deposits (user_id, bin_id, description, status) VALUES (?, ?, ?, ?)",
-    [userId, binId, description || "", "PENDING_VERIFICATION"]
+    "INSERT INTO waste_deposits (user_id, bin_id, description, image_data, status) VALUES (?, ?, ?, ?, ?)",
+    [userId, binId, description || "", image || null, "PENDING_VERIFICATION"]
   );
   return {
     id: result.insertId,
     user_id: userId,
     bin_id: binId,
     description,
+    image_data: image,
     status: "PENDING_VERIFICATION"
   };
 }

@@ -8,7 +8,11 @@ const router = express.Router();
 
 router.post(
   "/",
-  [body("binId").isInt(), body("description").optional().isString()],
+  [
+    body("binId").isInt(),
+    body("description").optional().isString(),
+    body("image").optional().isString()
+  ],
   validate,
   createDeposit
 );

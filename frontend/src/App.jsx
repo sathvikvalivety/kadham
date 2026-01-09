@@ -8,6 +8,7 @@ import WasteDepositPage from "./pages/WasteDepositPage";
 import ProductScanPage from "./pages/ProductScanPage";
 import RedeemPage from "./pages/RedeemPage";
 import TransactionsPage from "./pages/TransactionsPage";
+import DepositHistoryPage from "./pages/DepositHistoryPage";
 
 function App() {
   const [token, setToken] = React.useState(localStorage.getItem("kadham_token"));
@@ -50,6 +51,10 @@ function App() {
           <Route
             path="/transactions"
             element={isAuthenticated ? <TransactionsPage /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/history"
+            element={isAuthenticated ? <DepositHistoryPage /> : <Navigate to="/login" />}
           />
         </Routes>
       </main>
