@@ -1,9 +1,17 @@
 const express = require("express");
 const axios = require("axios");
+const cors = require("cors");
 const { Mistral } = require("@mistralai/mistralai");
 require("dotenv").config();
 
 const app = express();
+
+// Enable CORS for frontend
+app.use(cors({
+    origin: ["http://localhost:5173", "http://localhost:3000"],
+    credentials: true
+}));
+
 app.use(express.json({ limit: "50mb" }));
 
 const PORT = process.env.AI_SERVICE_PORT || 5001;
@@ -15,6 +23,131 @@ if (!MISTRAL_API_KEY) {
 }
 
 const client = new Mistral({ apiKey: MISTRAL_API_KEY });
+
+// =====================================================
+// Helper: Extract JSON from AI response
+// =====================================================
+function extractJson(text) {
+    text = text.trim();
+    if (text.startsWith("```")) {
+        text = text.replace("```json", "").replace("```", "").trim();
+    }
+    const start = text.indexOf("{");
+    const end = text.lastIndexOf("}");
+    if (start === -1 || end === -1) {
+        throw new Error("No JSON found in response");
+    }
+    return JSON.parse(text.substring(start, end + 1));
+}
+
+// =====================================================
+// Endpoint: Analyze Waste for Reuse & Greener Alternatives
+// =====================================================
+app.post("/analyze-waste-reuse", async (req, res) => {
+    const { image } = req.body;
+
+    if (!image) {
+        return res.status(400).json({ error: "Image is required" });
+    }
+
+    try {
+        console.log("[AI SERVICE] Starting waste reuse analysis...");
+
+        // STEP 1: Vision Analysis - Identify item and material
+        const visionPrompt = `Identify the MAIN OBJECT and its material.
+
+Respond ONLY in JSON:
+{
+  "item": "common object name in lowercase",
+  "material": "Plastic | Metal | Paper | Fabric | Organic | Glass | Electronic | Unknown",
+  "confidence": 0-100
+}
+
+Rules:
+- Item must be specific (e.g. sunglasses, towel, bottle)
+- Do NOT guess
+- No explanation`;
+
+        const visionResp = await client.chat.complete({
+            model: "pixtral-12b",
+            messages: [{
+                role: "user",
+                content: [
+                    { type: "text", text: visionPrompt },
+                    { type: "image_url", imageUrl: image }
+                ]
+            }],
+            responseFormat: { type: "json_object" }
+        });
+
+        const visionData = JSON.parse(visionResp.choices[0].message.content);
+        const { item, material, confidence } = visionData;
+
+        console.log(`[AI SERVICE] Vision analysis: ${item} (${material}) - ${confidence}% confidence`);
+
+        // STEP 2: Reasoning Analysis - Greener alternatives and DIY ideas
+        const reusePrompt = `You are a sustainability expert.
+
+Item: ${item}
+Material: ${material}
+
+First decide if this item is ALREADY eco-friendly and reusable.
+
+Examples of already eco-friendly items:
+- Metal water bottle
+- Glass bottle
+- Steel lunch box
+cdc- Cloth bag
+
+Respond ONLY in JSON:
+{
+  "is_already_eco_friendly": true | false,
+  "alternatives": [],
+  "diy": [
+    {
+      "title": "short DIY or care idea title",
+      "youtube_search": "youtube search query"
+    }
+  ]
+}
+
+Rules:
+- If is_already_eco_friendly is TRUE:
+  - alternatives MUST be an empty array
+- If is_already_eco_friendly is FALSE:
+  - alternatives should suggest realistic eco-friendly replacements
+- DIY ideas must relate to the SAME item
+- If nothing makes sense, return empty arrays
+- Do NOT explain`;
+
+        const reuseResp = await client.chat.complete({
+            model: "mistral-large-latest",
+            messages: [{ role: "user", content: reusePrompt }],
+            responseFormat: { type: "json_object" }
+        });
+
+        const reuseData = JSON.parse(reuseResp.choices[0].message.content);
+
+        console.log("[AI SERVICE] Reuse analysis complete");
+
+        // Return combined results
+        return res.json({
+            item,
+            material,
+            confidence,
+            is_already_eco_friendly: reuseData.is_already_eco_friendly,
+            alternatives: reuseData.alternatives || [],
+            diy: reuseData.diy || []
+        });
+
+    } catch (err) {
+        console.error("[AI SERVICE] Waste reuse analysis failed:", err.message);
+        return res.status(500).json({
+            error: "Analysis failed",
+            message: err.message
+        });
+    }
+});
 
 app.post("/analyze", async (req, res) => {
     const { depositId, description, image } = req.body;

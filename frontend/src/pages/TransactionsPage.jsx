@@ -41,7 +41,13 @@ function TransactionsPage() {
                   {tx.amount} {tx.token_symbol}
                 </td>
                 <td className="px-3 py-2">{tx.direction}</td>
-                <td className="px-3 py-2 break-all text-xs">{tx.tx_hash || "-"}</td>
+                <td className="px-3 py-2 break-all text-xs">
+                  {tx.tx_hash ? (
+                    <a href={`https://sepolia.etherscan.io/tx/${tx.tx_hash}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                      {tx.tx_hash.slice(0, 10)}...
+                    </a>
+                  ) : "-"}
+                </td>
               </tr>
             ))}
             {items.length === 0 && (

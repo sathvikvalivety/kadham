@@ -1,5 +1,6 @@
 import React from "react";
 import { createApiClient } from "../lib/api";
+import { getExplorerUrl } from "../lib/ethereum";
 
 function DepositHistoryPage() {
     const [token] = React.useState(() => {
@@ -8,13 +9,18 @@ function DepositHistoryPage() {
     });
     const api = React.useMemo(() => createApiClient(token), [token]);
     const [deposits, setDeposits] = React.useState([]);
+    const [transactions, setTransactions] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
 
     React.useEffect(() => {
         async function load() {
             try {
-                const res = await api.get("/deposits/me");
-                setDeposits(res.data);
+                const [depRes, txRes] = await Promise.all([
+                    api.get("/deposits/me"),
+                    api.get("/transactions/me")
+                ]);
+                setDeposits(depRes.data);
+                setTransactions(txRes.data);
             } catch (err) {
                 console.error("Failed to load history", err);
             } finally {
@@ -84,19 +90,72 @@ function DepositHistoryPage() {
                                     </td>
                                     <td className="px-6 py-4">
                                         <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${dep.status === 'APPROVED' ? 'bg-green-100 text-green-700' :
-                                                dep.status === 'REJECTED' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'
+                                            dep.status === 'REJECTED' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'
                                             }`}>
                                             {dep.status.replace('_', ' ')}
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 text-right font-bold text-green-600">
                                         {dep.eco_score ? `+${dep.eco_score}pts` : "--"}
+                                        {dep.tx_hash && (
+                                            <a href={`https://sepolia.etherscan.io/tx/${dep.tx_hash}`} target="_blank" rel="noopener noreferrer" className="block text-[10px] text-blue-500 hover:underline mt-1">
+                                                View Tx
+                                            </a>
+                                        )}
                                     </td>
                                 </tr>
                             ))
                         )}
                     </tbody>
                 </table>
+            </div>
+
+            <div className="mt-8">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">GBC Transactions</h2>
+                <div className="bg-white border rounded-2xl shadow-sm overflow-hidden text-sm">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50 uppercase text-[10px] font-bold tracking-wider text-gray-500">
+                            <tr>
+                                <th className="px-6 py-4 text-left">Date</th>
+                                <th className="px-6 py-4 text-left">Type</th>
+                                <th className="px-6 py-4 text-left">Details</th>
+                                <th className="px-6 py-4 text-right">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {loading ? (
+                                <tr><td colSpan="4" className="px-6 py-8 text-center text-gray-400">Loading transactions...</td></tr>
+                            ) : transactions.length === 0 ? (
+                                <tr><td colSpan="4" className="px-6 py-8 text-center text-gray-400">No transactions found.</td></tr>
+                            ) : (
+                                transactions.map((tx) => (
+                                    <tr key={tx.id} className="hover:bg-gray-50 transition-colors">
+                                        <td className="px-6 py-4 text-gray-500 text-xs">
+                                            {new Date(tx.created_at).toLocaleString()}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${tx.direction === 'CREDIT' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                                                }`}>
+                                                {tx.type || tx.direction}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-xs">
+                                            {tx.tx_hash ? (
+                                                <a href={getExplorerUrl('tx', tx.tx_hash)} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline flex items-center gap-1">
+                                                    View on Etherscan ↗
+                                                </a>
+                                            ) : <span className="text-gray-400">Off-chain</span>}
+                                        </td>
+                                        <td className={`px-6 py-4 text-right font-bold ${tx.direction === 'CREDIT' ? 'text-green-600' : 'text-red-600'
+                                            }`}>
+                                            {tx.direction === 'CREDIT' ? '+' : '-'}{tx.amount} GBC
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );
