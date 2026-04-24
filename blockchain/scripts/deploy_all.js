@@ -51,7 +51,12 @@ async function main() {
         // Grant MINTER_ROLE to RewardManager on GBC
         const MINTER_ROLE = await gbc.MINTER_ROLE();
         await gbc.grantRole(MINTER_ROLE, rewardManagerAddress);
+
         console.log("Granted MINTER_ROLE to RewardManager");
+
+        // Grant MINTER_ROLE to Deployer (for initial funding)
+        await gbc.grantRole(MINTER_ROLE, deployer.address);
+        console.log("Granted MINTER_ROLE to Deployer");
 
         // Grant ORACLE_ROLE to Deployer on RewardManager
         const RewardManagerContract = await hre.ethers.getContractAt("RewardManager", rewardManagerAddress);
@@ -83,6 +88,16 @@ async function main() {
     console.log(`VITE_DEX_ADDRESS=${dexAddress}`);
     console.log(`VITE_BRIDGE_ADDRESS=${bridgeAddress}`);
     console.log("----------------------------------------------------");
+
+    const fs = require("fs");
+    const addresses = {
+        VITE_GBC_TOKEN_ADDRESS: gbcAddress,
+        VITE_REWARD_MANAGER_ADDRESS: rewardManagerAddress,
+        VITE_DEX_ADDRESS: dexAddress,
+        VITE_BRIDGE_ADDRESS: bridgeAddress
+    };
+    fs.writeFileSync("deployment-addresses.json", JSON.stringify(addresses, null, 2));
+    console.log("Addresses written to deployment-addresses.json");
 }
 
 main().catch((error) => {
